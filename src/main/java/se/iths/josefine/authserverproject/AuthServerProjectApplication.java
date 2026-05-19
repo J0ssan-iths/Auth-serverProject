@@ -10,7 +10,7 @@ public class AuthServerProjectApplication {
 
     public static void main(String[] args) throws NoSuchAlgorithmException {
         SpringApplication.run(AuthServerProjectApplication.class, args);
-
+//
 //        KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
 //        generator.initialize(2048);
 //        KeyPair keyPair = generator.generateKeyPair();

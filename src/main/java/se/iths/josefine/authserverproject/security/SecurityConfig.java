@@ -39,18 +39,15 @@ public class SecurityConfig {
 
     private UserRepository userRepository;
 
-    private final String jwtIssuer;
     private final String jwtPublicKey;
     private final String jwtPrivateKey;
     private final String jwtKeyId;
 
     public SecurityConfig(
-            @Value("${app.jwt.issuer}") String jwtIssuer,
             @Value("${app.jwt.public-key}") String jwtPublicKey,
             @Value("${app.jwt.private-key}") String jwtPrivateKey,
             @Value("${app.jwt.key-id}") String jwtKeyId
     ) {
-        this.jwtIssuer = jwtIssuer;
         this.jwtPublicKey = jwtPublicKey;
         this.jwtPrivateKey = jwtPrivateKey;
         this.jwtKeyId = jwtKeyId;
