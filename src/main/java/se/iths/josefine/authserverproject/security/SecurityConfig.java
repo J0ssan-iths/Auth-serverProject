@@ -21,7 +21,6 @@ import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.util.StringUtils;
-import se.iths.josefine.authserverproject.repository.UserRepository;
 
 import java.security.KeyFactory;
 import java.security.KeyPair;
@@ -36,8 +35,6 @@ import java.util.Base64;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
-
-    private UserRepository userRepository;
 
     private final String jwtPublicKey;
     private final String jwtPrivateKey;
@@ -61,7 +58,7 @@ public class SecurityConfig {
             throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/auth/**", "/users/**").permitAll()
+                        .requestMatchers("/auth/**").permitAll()
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
