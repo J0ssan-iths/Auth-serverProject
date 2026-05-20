@@ -2,10 +2,10 @@ package se.iths.josefine.authserverproject.service;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import se.iths.josefine.authserverproject.component.AppUserComponent;
 import se.iths.josefine.authserverproject.dto.AppUserRequestDTO;
 import se.iths.josefine.authserverproject.dto.AppUserResponseDTO;
 import se.iths.josefine.authserverproject.exception.UserNotFoundException;
+import se.iths.josefine.authserverproject.mapper.AppUserMapper;
 import se.iths.josefine.authserverproject.model.AppUser;
 import se.iths.josefine.authserverproject.repository.UserRepository;
 
@@ -16,23 +16,23 @@ public class AppUserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
-    private final AppUserComponent appUserComponent;
+    private final AppUserMapper appUserMapper;
 
-    public AppUserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AppUserComponent appUserComponent) {
+    public AppUserService(UserRepository userRepository, PasswordEncoder passwordEncoder, AppUserMapper appUserMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.appUserComponent = appUserComponent;
+        this.appUserMapper = appUserMapper;
     }
 
     public List<AppUserResponseDTO> findAll() {
         List<AppUser> appUsers = userRepository.findAll();
-        return appUsers.stream().map(appUserComponent::toDto).toList();
+        return appUsers.stream().map(appUserMapper::toDto).toList();
     }
 
     public AppUserResponseDTO findById(Long id) {
         AppUser appUser = getAppUser(id);
 
-        AppUserResponseDTO appUserResponseDTO = appUserComponent.toDto(appUser);
+        AppUserResponseDTO appUserResponseDTO = appUserMapper.toDto(appUser);
 
         return appUserResponseDTO;
     }
@@ -44,12 +44,12 @@ public class AppUserService {
     }
 
     public AppUserResponseDTO create(AppUserRequestDTO appUserRequestDTO) {
-        AppUser appUser = appUserComponent.toEntity(appUserRequestDTO);
+        AppUser appUser = appUserMapper.toEntity(appUserRequestDTO);
         appUser.setRole("USER");
         String encodedPassword = passwordEncoder.encode(appUser.getPassword());
         appUser.setPassword(encodedPassword);
         AppUser savedUser = userRepository.save(appUser);
-        return appUserComponent.toDto(savedUser);
+        return appUserMapper.toDto(savedUser);
     }
 
     public void delete(Long id) {
