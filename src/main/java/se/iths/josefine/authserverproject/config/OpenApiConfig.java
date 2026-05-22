@@ -13,16 +13,16 @@ public class OpenApiConfig {
 
     @Bean
     public OpenAPI openAPI() {
-        String shemeName = "bearerAuth";
+        String schemeName = "bearerAuth";
         return new OpenAPI()
                 .info(new Info()
-                        .title("Person Service API")
+                        .title("Auth Service API")
                         .description("Simple JWT protected person microservices")
                         .version("1.0"))
-                .addSecurityItem(new SecurityRequirement().addList(shemeName))
+                .addSecurityItem(new SecurityRequirement().addList(schemeName))
                 .components(new Components()
-                        .addSecuritySchemes(shemeName, new SecurityScheme()
-                                .name(shemeName)
+                        .addSecuritySchemes(schemeName, new SecurityScheme()
+                                .name(schemeName)
                                 .type(SecurityScheme.Type.HTTP)
                                 .scheme("bearer")
                                 .bearerFormat("JWT")));
