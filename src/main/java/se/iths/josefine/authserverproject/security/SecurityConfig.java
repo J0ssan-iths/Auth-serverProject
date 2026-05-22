@@ -36,15 +36,18 @@ import java.util.Base64;
 @EnableWebSecurity
 public class SecurityConfig {
 
+    private final String jwtIssuer;
     private final String jwtPublicKey;
     private final String jwtPrivateKey;
     private final String jwtKeyId;
 
     public SecurityConfig(
+            @Value("${app.jwt.issuer}") String jwtIssuer,
             @Value("${app.jwt.public-key}") String jwtPublicKey,
             @Value("${app.jwt.private-key}") String jwtPrivateKey,
             @Value("${app.jwt.key-id}") String jwtKeyId
     ) {
+        this.jwtIssuer = jwtIssuer;
         this.jwtPublicKey = jwtPublicKey;
         this.jwtPrivateKey = jwtPrivateKey;
         this.jwtKeyId = jwtKeyId;
@@ -62,7 +65,7 @@ public class SecurityConfig {
                         .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/v3/api-docs/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/users/**").hasAnyRole("USER", "ADMIN")
                         .requestMatchers(HttpMethod.POST, "/users").hasRole("ADMIN")
-                        .requestMatchers(HttpMethod.DELETE, "/users").hasRole("ADMIN")
+                        .requestMatchers(HttpMethod.DELETE, "/users/**").hasRole("ADMIN")
                         .anyRequest().authenticated())
 //                .oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt ->
 //                        jwt.jwtAuthenticationConverter(jwtAuthenticationConverter)))
