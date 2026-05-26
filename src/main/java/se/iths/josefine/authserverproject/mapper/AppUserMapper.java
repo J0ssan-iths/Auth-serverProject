@@ -1,7 +1,6 @@
 package se.iths.josefine.authserverproject.mapper;
 
 import org.mapstruct.Mapper;
-import org.mapstruct.MappingTarget;
 import se.iths.josefine.authserverproject.dto.AppUserRequestDTO;
 import se.iths.josefine.authserverproject.dto.AppUserResponseDTO;
 import se.iths.josefine.authserverproject.model.AppUser;
@@ -13,6 +12,4 @@ public interface AppUserMapper {
 
     AppUserResponseDTO toDto(AppUser appUser);
 
-    void updateEntityFromDto(AppUserRequestDTO appUserRequestDTO,
-                             @MappingTarget AppUser appUser);
 }
