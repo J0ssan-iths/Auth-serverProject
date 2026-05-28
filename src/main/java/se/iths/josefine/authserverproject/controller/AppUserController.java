@@ -8,6 +8,8 @@ import se.iths.josefine.authserverproject.dto.AppUserRequestDTO;
 import se.iths.josefine.authserverproject.dto.AppUserResponseDTO;
 import se.iths.josefine.authserverproject.service.AppUserService;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -15,7 +17,11 @@ public class AppUserController {
 
     private final AppUserService appUserService;
 
-    
+    @GetMapping
+    public List<AppUserResponseDTO> findAll() {
+        return appUserService.findAll();
+    }
+
     @PostMapping
     public AppUserResponseDTO create(@Valid @RequestBody AppUserRequestDTO appUserRequestDTO) {
         return appUserService.create(appUserRequestDTO);
