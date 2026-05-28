@@ -20,7 +20,6 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    //ger 403
     public ResponseEntity<TokenResponseDTO> login(
             @Valid @RequestBody AppUserRequestDTO appUserRequestDTO
     ) {

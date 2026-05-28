@@ -17,7 +17,6 @@ public class AppUserController {
     private final AppUserService appUserService;
 
     @GetMapping
-    //ger null på username
     public List<AppUserResponseDTO> findAll() {
         return appUserService.findAll();
     }
