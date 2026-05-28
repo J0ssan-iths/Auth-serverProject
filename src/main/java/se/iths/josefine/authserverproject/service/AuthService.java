@@ -13,7 +13,7 @@ import org.springframework.security.oauth2.jwt.JwtClaimsSet;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
 import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
-import se.iths.josefine.authserverproject.dto.LoginRequestDTO;
+import se.iths.josefine.authserverproject.dto.AppUserRequestDTO;
 import se.iths.josefine.authserverproject.dto.TokenResponseDTO;
 
 import java.security.KeyPair;
@@ -46,7 +46,7 @@ public class AuthService {
         this.jwtKeyId = jwtKeyId;
     }
 
-    public TokenResponseDTO login(LoginRequestDTO request) {
+    public TokenResponseDTO login(AppUserRequestDTO request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.username(),

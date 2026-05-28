@@ -1,6 +1,5 @@
 package se.iths.josefine.authserverproject.controller;
 
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -22,13 +21,8 @@ public class AppUserController {
         return appUserService.findAll();
     }
 
-    @PostMapping
+    @PostMapping("/register")
     public AppUserResponseDTO create(@Valid @RequestBody AppUserRequestDTO appUserRequestDTO) {
         return appUserService.create(appUserRequestDTO);
-    }
-
-    @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        appUserService.delete(id);
     }
 }

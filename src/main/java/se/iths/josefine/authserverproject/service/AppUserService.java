@@ -51,9 +51,4 @@ public class AppUserService {
         AppUser savedUser = userRepository.save(appUser);
         return appUserMapper.toDto(savedUser);
     }
-
-    public void delete(Long id) {
-        AppUser appUser = getAppUser(id);
-        userRepository.delete(appUser);
-    }
 }
