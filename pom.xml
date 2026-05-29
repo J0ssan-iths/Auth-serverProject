@@ -10,7 +10,7 @@
     </parent>
     <groupId>se.iths.Josefine</groupId>
     <artifactId>Auth-serverProject</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0.0</version>
     <name>Auth-serverProject</name>
     <description>Auth-serverProject</description>
     <url/>
