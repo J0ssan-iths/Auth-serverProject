@@ -8,7 +8,6 @@
         <version>4.0.6</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-
     <groupId>se.iths.Josefine</groupId>
     <artifactId>Auth-serverProject</artifactId>
     <version>1.0.0</version>
