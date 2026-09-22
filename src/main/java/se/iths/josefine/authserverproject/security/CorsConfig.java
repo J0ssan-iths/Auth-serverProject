@@ -13,7 +13,7 @@ public class CorsConfig {
     //Med UrlBasedCorsConfigurationSource så kommer Spring Security automatisk konfigurera CORS.
     //Med följande kod kommer CORS support intregera med Spring Security
     @Bean
-    UrlBasedCorsConfigurationSource urlBasedCorsConfigurationSource() {
+    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         //Vi har 3 portar  tanke på att vi i gruppen kan köra sin frontend på olika Vite-portar
         configuration.setAllowedOrigins(Arrays.asList(
