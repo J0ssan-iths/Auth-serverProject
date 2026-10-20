@@ -20,8 +20,8 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
-import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
+import org.springframework.security.oauth2.core.OAuth2TokenValidator;
+import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.util.StringUtils;
 import se.iths.josefine.authserverproject.model.AppUser;
@@ -71,7 +71,9 @@ public class SecurityConfig {
                         .anyRequest().authenticated())
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .headers(headers -> headers.frameOptions(frame -> frame.disable()));
+                .headers(headers -> headers.frameOptions(frame -> frame.disable()))
+                // gör att Spring Security autentiserar inkommande Bearer-token med JwtDecoder
+                .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
 
         return http.build();
     }
@@ -127,5 +129,29 @@ public class SecurityConfig {
                     .roles(appUser.getRole())
                     .build();
         };
+    }
+
+    // skapar en decoder som kontrollerar JWT-token som skickas till Auth Server
+    // Spring hämtar den befintliga KeyPair-beanen och skickar in den som parameter
+    @Bean
+    public JwtDecoder jwtDecoder(KeyPair keyPair) {
+        // hämtar den publika nyckeln från nyckelparet
+        // den publika nyckeln används för att kontrollera att token är korrekt signerad
+        RSAPublicKey publicKey = (RSAPublicKey) keyPair.getPublic();
+
+        // skapar en decoder som läser och verifierar JWT-token med den publika nyckeln
+        NimbusJwtDecoder decoder = NimbusJwtDecoder
+                .withPublicKey(publicKey)
+                .build();
+
+        // validerar både tokens giltighetstid och att rätt issuer har utfärdat den
+        OAuth2TokenValidator<Jwt> validator =
+                JwtValidators.createDefaultWithIssuer(jwtIssuer);
+
+        // kopplar valideringen till decodern så att kontrollerna utförs vid validering
+        decoder.setJwtValidator(validator);
+
+        // returnerar decodern så att Spring Security kan använda den för inkommande JWT-token
+        return decoder;
     }
 }

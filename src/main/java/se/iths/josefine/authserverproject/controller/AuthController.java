@@ -1,12 +1,17 @@
 package se.iths.josefine.authserverproject.controller;
 
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 import se.iths.josefine.authserverproject.dto.AppUserRequestDTO;
+import se.iths.josefine.authserverproject.dto.AuthMeResponseDTO;
 import se.iths.josefine.authserverproject.dto.TokenResponseDTO;
 import se.iths.josefine.authserverproject.service.AuthService;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -30,4 +35,23 @@ public class AuthController {
     public ResponseEntity<Map<String, Object>> publicJwks() {
         return ResponseEntity.ok(authService.publicJwkSet());
     }
+
+
+    // returnerar information om användaren vars JWT-token har validerats
+    @SecurityRequirement(name = "bearerAuth")
+    @GetMapping("/me")
+
+    public ResponseEntity<AuthMeResponseDTO> me(@AuthenticationPrincipal Jwt jwt) {
+
+        // hämtar användarnamnet från tokens subject (sub)
+        String username = jwt.getSubject();
+
+        // hämtar rollerna från tokens roles-claim
+        List<String> roles = jwt.getClaimAsStringList("roles");
+
+        // skickar tillbaka användarnamn och roller (som JSON), men inte själva token
+        return ResponseEntity.ok(new AuthMeResponseDTO(username, roles));
+    }
+
+
 }
