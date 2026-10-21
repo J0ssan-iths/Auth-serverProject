@@ -10,6 +10,8 @@ import se.iths.josefine.authserverproject.dto.AppUserRequestDTO;
 import se.iths.josefine.authserverproject.dto.AuthMeResponseDTO;
 import se.iths.josefine.authserverproject.dto.TokenResponseDTO;
 import se.iths.josefine.authserverproject.service.AuthService;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -48,6 +50,14 @@ public class AuthController {
 
         // hämtar rollerna från tokens roles-claim
         List<String> roles = jwt.getClaimAsStringList("roles");
+
+        // en giltig token ska alltid innehålla minst en roll (USER eller ADMIN)
+        if (roles == null || roles.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.UNAUTHORIZED,
+                    "Token saknar roller"
+            );
+        }
 
         // skickar tillbaka användarnamn och roller (som JSON), men inte själva token
         return ResponseEntity.ok(new AuthMeResponseDTO(username, roles));
