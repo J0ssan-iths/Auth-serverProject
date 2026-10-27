@@ -9,11 +9,11 @@ import se.iths.josefine.authserverproject.service.AppUserService;
 
 import java.util.List;
 
+/**
+ * Endpoints för autentisering: inloggning, publik nyckel (JWKS) och aktuell användare. Nås via /auth
+ */
 @RestController
 @RequiredArgsConstructor
-/**
- * Endpoint för användare, för att nå endpoints i denna controller behövs /users efter urlen
- */
 @RequestMapping("/users")
 public class AppUserController {
 
@@ -22,6 +22,8 @@ public class AppUserController {
     /**
      * Endpoint för att hämta alla användare, nås via /users/
      * Metoden anropar findAll i klassen appUserService
+     *
+     * @return en lista med alla användare som DTO
      */
     @GetMapping
     public List<AppUserResponseDTO> findAll() {
@@ -32,7 +34,7 @@ public class AppUserController {
      * Endpoint för att registrera ny användare, nås på //users/register
      *
      * @param appUserRequestDTO används till att efterfråga username och password vid ny användare
-     * @return ny användare via metoden create i klassen appUserService
+     * @return den skapade användaren som AppUserResponseDTO
      */
     @PostMapping("/register")
     public AppUserResponseDTO create(@Valid @RequestBody AppUserRequestDTO appUserRequestDTO) {

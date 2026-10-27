@@ -25,7 +25,7 @@ public class AppUserService {
     }
 
     /**
-     * Metod för att hämta alla användare i en lista. ANvändarna hämtas som entitys
+     * Metod för att hämta alla användare i en lista. Användarna hämtas som entitys
      * och mappas sedan om till dtos
      *
      * @return alla användare i en lista med användarnamn
@@ -40,7 +40,8 @@ public class AppUserService {
      * om till en dto
      *
      * @param id används för att leta efter specifik användare
-     * @return returnerar användarnamn
+     * @return användaren som DTO
+     * @throws UserNotFoundException om användaren inte finns
      */
     public AppUserResponseDTO findById(Long id) {
         AppUser appUser = getAppUser(id);

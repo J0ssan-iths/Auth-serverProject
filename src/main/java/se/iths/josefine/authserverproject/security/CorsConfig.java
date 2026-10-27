@@ -13,7 +13,7 @@ import java.util.Arrays;
 @Configuration
 public class CorsConfig {
     /**
-     * Skapar enn CORS konfiguration som integreras med Spring Security
+     * Skapar en CORS konfiguration som integreras med Spring Security
      * Tillåter anrop från frontend som körs på porterna 5173, 5174 och 5175 samt
      * specifierar tillåtna HTTP metoder och headers
      * Tillåter anrop med autentiseringsuppgifter som cookies

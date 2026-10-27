@@ -159,7 +159,7 @@ public class SecurityConfig {
     /**
      * Metod som skapar en PasswordEncoder för att hasha lösenord
      *
-     * @return ett hashat lösenord innan den sparas i databasen
+     * @return en BCrypt-PasswordEncoder som används för att hasha lösenord
      */
     @Bean
     public PasswordEncoder passwordEncoder() {

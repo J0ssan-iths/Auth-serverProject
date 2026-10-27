@@ -94,7 +94,7 @@ public class AuthService {
     }
 
     /**
-     * Skapar och returnerar enn JSON WebKeySet (JWKS) som innehåller den publika
+     * Skapar och returnerar en JSON WebKeySet (JWKS) som innehåller den publika
      * RSA nyckeln som används för att verifiera JWT-token
      *
      * @return en map som reprsenterar JWKS i JSON-format

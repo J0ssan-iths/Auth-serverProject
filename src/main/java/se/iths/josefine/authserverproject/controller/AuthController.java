@@ -33,7 +33,7 @@ public class AuthController {
      * Endpoint för att logga in, /auth/login
      *
      * @param appUserRequestDTO används för att ha krav på username och password vid inloggning
-     * @return en autentiserad användare
+     * @return en TokenResponseDTO med åtkomsttoken, giltighetstid, användarnamn och roller
      */
     @PostMapping("/login")
     public ResponseEntity<TokenResponseDTO> login(
@@ -43,9 +43,10 @@ public class AuthController {
     }
 
     /**
-     * Endpoint för jwt-token, /auth/jwks
+     * Endpoint som returnerar den publika nyckeln (JWKS) som andra tjänster
+     * använder för att verifiera JWT, /auth/jwks
      *
-     * @return en jwt-token
+     * @return JWKS i JSON-format
      */
     @GetMapping("/jwks")
     public ResponseEntity<Map<String, Object>> publicJwks() {
@@ -58,7 +59,7 @@ public class AuthController {
      * Endpoint som används för att återställa användare efter omladdning av sidan /auth/me
      * Returnerar information om användaren vars JWT-token har validerats
      *
-     * @param jwt
+     * @param jwt den validerade JWT-token för den inloggade användaren
      * @return skickar tillbaka användarnamn och roller (som JSON), men inte själva token
      */
     @SecurityRequirement(name = "bearerAuth")
