@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.jose.jws.SignatureAlgorithm;
 import org.springframework.security.oauth2.jwt.JwsHeader;
@@ -46,6 +47,15 @@ public class AuthService {
         this.jwtKeyId = jwtKeyId;
     }
 
+    /**
+     * Metod för att logga in användare med användarnamn och lösenord
+     * Därefter skapas JWT-token som innehåller användarens namn, roller
+     * och information om när token utfärdats och löper ut
+     *
+     * @param request DTO som innehåller användarens användarnamn
+     * @return en TokenResponseDTO med åtkomsttoken, giltighetstid, användarnamn och roller.
+     * @throws AuthenticationException om autentiseringen misslyckades
+     */
     public TokenResponseDTO login(AppUserRequestDTO request) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
@@ -83,6 +93,12 @@ public class AuthService {
         );
     }
 
+    /**
+     * Skapar och returnerar en JSON WebKeySet (JWKS) som innehåller den publika
+     * RSA nyckeln som används för att verifiera JWT-token
+     *
+     * @return en map som reprsenterar JWKS i JSON-format
+     */
     public Map<String, Object> publicJwkSet() {
         RSAKey rsaKey = new RSAKey.Builder((RSAPublicKey) keyPair.getPublic())
                 .keyID(jwtKeyId)
@@ -90,3 +106,4 @@ public class AuthService {
         return new JWKSet(rsaKey).toJSONObject();
     }
 }
+

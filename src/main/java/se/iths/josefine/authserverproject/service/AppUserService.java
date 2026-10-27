@@ -24,11 +24,25 @@ public class AppUserService {
         this.appUserMapper = appUserMapper;
     }
 
+    /**
+     * Metod för att hämta alla användare i en lista. Användarna hämtas som entitys
+     * och mappas sedan om till dtos
+     *
+     * @return alla användare i en lista med användarnamn
+     */
     public List<AppUserResponseDTO> findAll() {
         List<AppUser> appUsers = userRepository.findAll();
         return appUsers.stream().map(appUserMapper::toDto).toList();
     }
 
+    /**
+     * Hittar användare med id, användaren hämtas som en entity från databasen och mappas
+     * om till en dto
+     *
+     * @param id används för att leta efter specifik användare
+     * @return användaren som DTO
+     * @throws UserNotFoundException om användaren inte finns
+     */
     public AppUserResponseDTO findById(Long id) {
         AppUser appUser = getAppUser(id);
 
@@ -37,12 +51,28 @@ public class AppUserService {
         return appUserResponseDTO;
     }
 
+    /**
+     * Metod för att hämta specifik användare med ID
+     * Om användaren inte hittas kastas ett UserNotFoundException
+     *
+     * @param id används för att hämta specifik användare
+     * @return användare med efterfrågat id
+     */
     public AppUser getAppUser(Long id) {
         AppUser appUser = userRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Användaren hittades inte"));
         return appUser;
     }
 
+    /**
+     * Metod för att skapa användare med Användarnamn, encoded lösenord och roll. Rollen sätts som standard
+     * till ROLE_USER. Rollen kan sedan ändras i databasen.
+     * Användaren omvandlas från en DTO till en entity för att sparas till databasen,
+     * mappas tillbaka till en dto innan den returneras
+     *
+     * @param appUserRequestDTO som innehåller användarnamn och lösenord
+     * @return en sparad användare som mappas från till en dto
+     */
     public AppUserResponseDTO create(AppUserRequestDTO appUserRequestDTO) {
         AppUser appUser = appUserMapper.toEntity(appUserRequestDTO);
         appUser.setRole("USER");

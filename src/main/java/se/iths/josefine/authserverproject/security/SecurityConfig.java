@@ -37,6 +37,11 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
+/**
+ * Denna klass konfigurerar applikationens säkerhet med Spring Security
+ * Aktiverar webbsäkerhet och hur åtkomsten till applikationens endpoint ska hanteras
+ *
+ */
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -58,6 +63,15 @@ public class SecurityConfig {
         this.jwtKeyId = jwtKeyId;
     }
 
+    /**
+     * Konfigurerar Spring Securitys FilterChain och bestämmer vilka endpoints som är
+     * tillgängliga utan autentisering och vilka som kräver en inloggad användare
+     * Metoden konfigurerar även CORS, CSRF och autentisering med JWT Bearer token
+     *
+     * @param http används för att konfigurera applikationens säkerhetsregler
+     * @return en securityFilterChain med konfigurerade åtkomstregler och JWT autentisering
+     * @throws Exception om ett fel uppstår vid konfiguration av kedjan
+     */
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http)
             throws Exception {
@@ -78,6 +92,14 @@ public class SecurityConfig {
         return http.build();
     }
 
+    /**
+     * Skapar ett RSA nyckelpar som används för signering och verifiering av JWT token
+     * Metoden läser in de privata och publika nycklarna från Base64 kodade värden
+     * och omvandlar de till nycklar som kan användas av Java
+     *
+     * @return ett nyckelpar som innehåller den publika och privata RSA nyckeln
+     * @throws Exception om fel uppstår när nyckelparet skapas
+     */
     @Bean
     public KeyPair keyPair() throws Exception {
         if (StringUtils.hasText(jwtPrivateKey) && StringUtils.hasText(jwtPublicKey)) {
@@ -91,6 +113,13 @@ public class SecurityConfig {
         throw new IllegalArgumentException("Privat eller publik nyckel för JWT saknas");
     }
 
+    /**
+     * Skapar en JWKS som tillhandahåller RSA nyckelparet som sedan används för att signera
+     * JWT token
+     *
+     * @param keyPair innehåller den publika och privata RSA nyckeln
+     * @return en jwks som hanterar RSA nyckeln för JWT hantering
+     */
     @Bean
     public JWKSource<SecurityContext> jwkSource(KeyPair keyPair) {
         RSAKey rsaKey = new RSAKey.Builder((RSAPublicKey) keyPair.getPublic())
@@ -100,11 +129,26 @@ public class SecurityConfig {
         return new ImmutableJWKSet<>(new JWKSet(rsaKey));
     }
 
+    /**
+     * Skapar en JwtEncoder som sedan används för att signera och koda JWT tokens
+     * med hjälp av en konfigurerad källa för jwks
+     *
+     * @param jwkSource hanterar nycklar för signering
+     * @return nimbusJwtEncoder som används för att skapa JWT token
+     */
     @Bean
     public JwtEncoder jwtEncoder(JWKSource<SecurityContext> jwkSource) {
         return new NimbusJwtEncoder(jwkSource);
     }
 
+    /**
+     * Metod som hämtar Spring Securitys AuthenticationManager för att kunna hantera
+     * autentisering av användare
+     *
+     * @param authenticationConfiguration konfiguration som används för att hämta AuthenticationManager
+     * @return AuthenticationManager som sedan används för att autentisera användare
+     * @throws Exception om fel uppstår vid hämtning av AuthenticationManager
+     */
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration authenticationConfiguration
@@ -112,11 +156,23 @@ public class SecurityConfig {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
+    /**
+     * Metod som skapar en PasswordEncoder för att hasha lösenord
+     *
+     * @return en BCrypt-PasswordEncoder som används för att hasha lösenord
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
 
+    /**
+     * Metod som skapar en UserDetailsService som hämtar användarens uppgifter från databasen
+     *
+     * @param userRepository används för att söka efter användare via användarnamnet
+     * @return en userDetailsService som hanterar användarens uppgifter för
+     * Spring Securitys autentisering
+     */
     @Bean
     public UserDetailsService userDetailsService(UserRepository userRepository) {
         return username -> {
@@ -131,8 +187,12 @@ public class SecurityConfig {
         };
     }
 
-    // skapar en decoder som kontrollerar JWT-token som skickas till Auth Server
-    // Spring hämtar den befintliga KeyPair-beanen och skickar in den som parameter
+    /**
+     * Skapar en decoder som kontrollerar JWT-token som skickas till Auth Server
+     *
+     * @param keyPair Spring hämtar den befintliga KeyPair-beanen och skickar in den som parameter
+     * @return returnerar decodern så att Spring Security kan använda den för inkommande JWT-token
+     */
     @Bean
     public JwtDecoder jwtDecoder(KeyPair keyPair) {
         // hämtar den publika nyckeln från nyckelparet
@@ -151,7 +211,6 @@ public class SecurityConfig {
         // kopplar valideringen till decodern så att kontrollerna utförs vid validering
         decoder.setJwtValidator(validator);
 
-        // returnerar decodern så att Spring Security kan använda den för inkommande JWT-token
         return decoder;
     }
 }
